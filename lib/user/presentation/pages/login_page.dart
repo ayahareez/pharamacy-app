@@ -11,7 +11,7 @@ import '../../data/models/auth_model.dart';
 import '../bloc/auth/auth_bloc.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -38,9 +38,6 @@ class _LoginPageState extends State<LoginPage> {
           if (state is UserLoadingState) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state is UserErrorState) {
-            showToast("An error occurred: ${state.error}");
-          }
           return Padding(
             padding: const EdgeInsets.all(20.0),
             child: Center(
@@ -48,16 +45,16 @@ class _LoginPageState extends State<LoginPage> {
                 child: Form(
                   key: formKey,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
+                      const Center(
                         child: Text(
                           'Pharmacy',
                           style: TextStyle(
                               fontSize: 24, fontFamily: 'CrimsonText-Regular'),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 24,
                       ),
                       Center(
@@ -70,19 +67,29 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(
                         height: 16.0,
                       ),
+                      const Text(
+                        'Login',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                            fontFamily: 'CrimsonText-Regular'),
+                      ),
+                      const SizedBox(
+                        height: 16.0,
+                      ),
                       TextFormField(
                         controller: email,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           labelText: 'Email',
-                          labelStyle: TextStyle(
+                          labelStyle: const TextStyle(
                               color: Color(0xff212529),
                               fontWeight: FontWeight.bold,
                               fontFamily: 'CrimsonText-Regular'),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          prefixIcon: Icon(
+                          prefixIcon: const Icon(
                             Icons.email,
                             color: Color(0xffd4a276),
                           ),
@@ -108,13 +115,13 @@ class _LoginPageState extends State<LoginPage> {
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: 'Password',
-                          labelStyle: TextStyle(
+                          labelStyle: const TextStyle(
                               color: Color(0xff212529),
                               fontWeight: FontWeight.bold,
                               fontFamily: 'CrimsonText-Regular'),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8)),
-                          prefixIcon: Icon(
+                          prefixIcon: const Icon(
                             Icons.lock,
                             color: Color(0xffe6ccb2),
                           ),
@@ -144,38 +151,42 @@ class _LoginPageState extends State<LoginPage> {
                                   .add(SignIn(userModel: userModel));
                             }
                           },
-                          child: Text(
-                            'login',
-                            style: const TextStyle(
-                                fontSize: 18,
-                                fontFamily: 'CrimsonText-Regular'),
-                          ),
                           style: ElevatedButton.styleFrom(
                             //e8D0aa
                             //ffe8d6
                             backgroundColor: const Color(0xfff5e0c0),
                             foregroundColor: Colors.black,
                           ),
+                          child: const Text(
+                            'login',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'CrimsonText-Regular'),
+                          ),
                         ),
                       ),
                       const SizedBox(
                         height: 8.0,
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => ControllerPage()));
-                        },
-                        child: const Text('login as geust',
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: 'CrimsonText-Regular')),
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xfff5e0c0)),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            context.read<AuthBloc>().add(GuestSignIn());
+                            setState(() {});
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (_) => ControllerPage()));
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xfff5e0c0)),
+                          child: const Text('login as geust',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'CrimsonText-Regular')),
+                        ),
                       ),
                       const SizedBox(
                         height: 16.0,
@@ -200,7 +211,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: const Text('Register now',
                                 style: TextStyle(
                                     fontSize: 20,
-                                    color: Color(0xffAB9D88),
+                                    color: Color(0xff9b6f35),
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'CrimsonText-Regular')),
                           ),
@@ -215,8 +226,13 @@ class _LoginPageState extends State<LoginPage> {
         },
         listener: (BuildContext context, AuthState state) {
           if (state is UserAuthorizedState) {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => ControllerPage()));
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ControllerPage()));
+          }
+          if (state is UserErrorState) {
+            showToast("An error occurred: ${state.error}");
           }
         },
       ),

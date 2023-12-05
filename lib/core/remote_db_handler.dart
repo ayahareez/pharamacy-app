@@ -3,7 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../user/data/models/user_model.dart';
 
 abstract class RemoteDbHelper {
-  Future<void> add(String collectionName, Map<String, dynamic> data);
+  Future<void> add(
+    String collectionName,
+    Map<String, dynamic> data, {
+    String? documentId,
+  });
   Future<void> update(
       String collectionName, String docId, Map<String, dynamic> data);
   Future<void> delete(String collectionName, String docId);
@@ -12,8 +16,17 @@ abstract class RemoteDbHelper {
 
 class RemoteDbHelperImpl extends RemoteDbHelper {
   @override
-  Future<void> add(String collectionName, Map<String, dynamic> data) =>
-      FirebaseFirestore.instance.collection(collectionName).add(data);
+  Future<void> add(String collectionName, Map<String, dynamic> data,
+      {String? documentId}) async {
+    final CollectionReference collection =
+        FirebaseFirestore.instance.collection(collectionName);
+
+    if (documentId != null) {
+      await collection.doc(documentId).set(data);
+    } else {
+      await collection.add(data);
+    }
+  }
 
   @override
   Future<void> delete(String collectionName, String docId) =>

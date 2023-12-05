@@ -5,7 +5,7 @@ import 'package:pharmacy/medicine/presentation/pages/kits_page.dart';
 import 'package:pharmacy/medicine/presentation/pages/products_page.dart';
 
 class ControllerPage extends StatefulWidget {
-  ControllerPage({
+  const ControllerPage({
     Key? key,
     this.title,
   }) : super(key: key);
@@ -24,15 +24,15 @@ class _ControllerPageState extends State<ControllerPage> {
     TabItem(
       Icons.personal_injury,
       "PRODUCTS",
-      Color(0xff50514f),
-      labelStyle: TextStyle(
+      const Color(0xff50514f),
+      labelStyle: const TextStyle(
         fontWeight: FontWeight.normal,
       ),
     ),
     TabItem(
       Icons.medical_services_rounded,
       "KITS",
-      Color(0xff50514f),
+      const Color(0xff50514f),
     ),
   ]);
 
@@ -59,7 +59,7 @@ class _ControllerPageState extends State<ControllerPage> {
   Widget bodyContainer() {
     return IndexedStack(
       index: selectedPos,
-      children: [
+      children: const [
         ProductsPage(),
         KitsPage(),
       ],
@@ -72,11 +72,11 @@ class _ControllerPageState extends State<ControllerPage> {
       controller: _navigationController,
       selectedPos: selectedPos,
       barHeight: bottomNavBarHeight,
-      barBackgroundColor: Color(0xffE8D9C4),
-      backgroundBoxShadow: <BoxShadow>[
+      barBackgroundColor: const Color(0xffE8D9C4),
+      backgroundBoxShadow: const <BoxShadow>[
         BoxShadow(color: Colors.black45, blurRadius: 10.0),
       ],
-      animationDuration: Duration(milliseconds: 300),
+      animationDuration: const Duration(milliseconds: 300),
       selectedCallback: (int? selectedPos) {
         setState(() {
           this.selectedPos = selectedPos ?? 0;

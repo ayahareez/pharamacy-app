@@ -1,15 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pharmacy/medicine/data/models/cart_model.dart';
-import 'package:pharmacy/medicine/presentation/pages/search.dart';
+import 'package:pharmacy/medicine/presentation/pages/history_page.dart';
+import 'package:pharmacy/medicine/presentation/pages/ongoing_page.dart';
 import 'package:pharmacy/medicine/presentation/pages/your_cart_page.dart';
-import 'package:pharmacy/medicine/presentation/widgets/medicine_grid_tile.dart';
-
+import 'package:pharmacy/medicine/presentation/widgets/product_grid_tile.dart';
+import 'package:pharmacy/user/presentation/pages/login_page.dart';
 import '../../../user/data/models/user_model.dart';
+import '../../../user/presentation/bloc/auth/auth_bloc.dart';
 import '../../../user/presentation/bloc/user_data/user_bloc.dart';
-import '../../data/data_source/medicine_local_ds.dart';
-import '../bloc/medicine_bloc.dart';
+import '../../data/models/cart_model.dart';
+import '../../data/models/product_model.dart';
+import '../bloc/cart_bloc/cart_bloc.dart';
+import '../bloc/medicine_bloc/product_bloc.dart';
+import '../widgets/custom_keyboard.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({super.key});
@@ -19,43 +23,60 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
-  late Set name;
+  late String name;
   late String userId = ''; // Initialize with an empty string
-  late TextEditingController searchController;
+  bool cartFetched = false;
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!cartFetched) {
+      context.read<ProductBloc>().add(GetProducts());
+      cartFetched = true;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _initializeData();
-    context.read<MedicineBloc>().add(GetMedicines());
-    searchController = TextEditingController();
+    context.read<ProductBloc>().add(GetProducts());
+    //context.read<CartBloc>().add(GetCart());
   }
 
   Future<void> _initializeData() async {
     context.read<UserBloc>().add(GetUserEvent());
     User? user = FirebaseAuth.instance.currentUser;
-    //print(user);
     if (user != null) {
       userId = user.uid;
     }
     print(userId);
-
-    setState(() {});
     print('aya');
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MedicineBloc, MedicineState>(
+    return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
-        if (state is MedicineLoading) {
-          return CircularProgressIndicator();
+        print(state);
+        if (state is ProductLoading) {
+          return const Center(child: CircularProgressIndicator());
         }
-        if (state is MedicineLoaded) {
+        if (state is ProductLoaded) {
+          List<ProductModel> filteredProducts = state.products
+              .where((product) => product.productName
+                  .toLowerCase()
+                  .contains(_searchController.text.toLowerCase()))
+              .toList();
+          List<ProductModel> displayProducts = _searchController.text.isEmpty
+              ? state.products
+              : filteredProducts;
           return Scaffold(
               appBar: AppBar(
                 leading: Builder(
                   builder: (context) => IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.menu,
                       size: 30,
                     ),
@@ -64,29 +85,25 @@ class _ProductsPageState extends State<ProductsPage> {
                     },
                   ),
                 ),
-                title: Text(
+                title: const Text(
                   'M\'s Remedies',
                   style: TextStyle(fontSize: 24, fontFamily: 'MyFont'),
                 ),
                 actions: [
                   IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.search,
                       size: 32,
                     ),
                     onPressed: () {
-                      showSearch(
-                        context: context,
-                        delegate:
-                            MedicineSearchDelegate(medicines: state.medicines),
-                      );
+                      _showSearchBottomSheet(context);
                     },
                   ),
                   Stack(
                     alignment: Alignment.topRight,
                     children: [
                       IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.shopping_cart,
                           size: 30,
                         ),
@@ -100,18 +117,33 @@ class _ProductsPageState extends State<ProductsPage> {
                       CircleAvatar(
                         backgroundColor: Colors.red,
                         radius: 8,
-                        child: Text(
-                          "7",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                          textAlign: TextAlign.center,
+                        child: BlocBuilder<CartBloc, CartState>(
+                          builder: (context, state) {
+                            if (state is CartLoaded) {
+                              int theTotal = total(state.cartModels);
+                              return Text(
+                                theTotal == 0 ? '' : "${theTotal}",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                                textAlign: TextAlign.center,
+                              );
+                            }
+                            return const Text(
+                              "",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                              textAlign: TextAlign.center,
+                            );
+                          },
                         ),
-                      ),
+                      )
                     ],
                   ),
-                  SizedBox(width: 15),
+                  const SizedBox(width: 15),
                 ],
               ),
               drawer: BlocBuilder<UserBloc, UserState>(
@@ -119,118 +151,214 @@ class _ProductsPageState extends State<ProductsPage> {
                   print(state);
                   if (state is UserLoadedState) {
                     print(state.usersModel.toString());
-                    name = state.usersModel
-                        .where((element) => element.id == userId)
-                        .toList()
-                        .toSet();
-                    name = state.usersModel
-                        .where((element) => element.id == userId)
-                        .toSet();
+                    name = state.usersModel.name;
 
                     if (name.isNotEmpty) {
-                      print(name.first);
+                      print(name);
                     } else {
                       print('No matching element found');
                     }
-                    return Drawer(
-                      child: ListView(
-                        padding: EdgeInsets.zero,
-                        children: [
-                          DrawerHeader(
-                            margin: EdgeInsetsDirectional.only(bottom: 16),
-                            decoration: BoxDecoration(
-                              color: Color(0xffe4d4c5),
-                            ),
-                            child: Container(
-                              height: 50,
-                              alignment: AlignmentDirectional.center,
-                              child: Text(
-                                  '${state.usersModel.isNotEmpty ? state.usersModel.firstWhere((element) => element.id == userId, orElse: () => UserModel(name: '', id: ''))?.name : ''}',
-                                  style: TextStyle(
-                                      fontFamily: 'CrimsonText-Regular',
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 26)),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                    return BlocListener<AuthBloc, AuthState>(
+                      listener: (context, state) {
+                        if (state is UserUnauthorized) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
+                          );
+                        }
+                      },
+                      child: Drawer(
+                        child: ListView(
+                          padding: EdgeInsets.zero,
+                          children: [
+                            DrawerHeader(
+                              margin:
+                                  const EdgeInsetsDirectional.only(bottom: 16),
+                              decoration: const BoxDecoration(
+                                color: Color(0xffe4d4c5),
+                              ),
+                              child: Container(
+                                height: 50,
+                                alignment: AlignmentDirectional.center,
+                                child: Column(
                                   children: [
-                                    Icon(Icons.history_toggle_off),
-                                    TextButton(
-                                      onPressed: () {
-                                        // Handle the first button tap
-                                        Navigator.pop(
-                                            context); // Close the drawer if needed
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(builder: (context) => FirstPage()),
-                                        // );
-                                      },
-                                      child: Text('Ongoing',
-                                          style: TextStyle(
-                                              fontFamily: 'CrimsonText-Regular',
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                              fontSize: 18)),
+                                    Text('${state.usersModel.name}',
+                                        style: const TextStyle(
+                                            fontFamily: 'CrimsonText-Regular',
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 26)),
+                                    const Spacer(),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            context
+                                                .read<AuthBloc>()
+                                                .add(SignOut());
+                                          },
+                                          child: const Text('LogOut',
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      'CrimsonText-Regular',
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
+                                                  fontSize: 18)),
+                                        ),
+                                        const Icon(Icons.logout),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Icon(Icons.history),
-                                    TextButton(
-                                      onPressed: () {
-                                        // Handle the second button tap
-                                        Navigator.pop(
-                                            context); // Close the drawer if needed
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(builder: (context) => SecondPage()),
-                                        // );
-                                      },
-                                      child: Text('History',
-                                          style: TextStyle(
-                                              fontFamily: 'CrimsonText-Regular',
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                              fontSize: 18)),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                          // Add more ListTile widgets for additional menu items
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.history_toggle_off),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    OngoingPage()),
+                                          );
+                                        },
+                                        child: const Text('Ongoing',
+                                            style: TextStyle(
+                                                fontFamily:
+                                                    'CrimsonText-Regular',
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                                fontSize: 18)),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.history),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const HistoryPage()),
+                                          );
+                                        },
+                                        child: const Text('History',
+                                            style: TextStyle(
+                                                fontFamily:
+                                                    'CrimsonText-Regular',
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                                fontSize: 18)),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   }
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 },
               ),
               body: Container(
-                padding: EdgeInsetsDirectional.all(8),
+                padding: const EdgeInsetsDirectional.all(8),
                 child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 24,
                   ),
-                  itemBuilder: (_, i) => MedicineGridTile(
-                    cartModel: CartModel(
-                        medicineModel: state.medicines[i], id: '', qty: 0),
+                  itemBuilder: (_, i) =>
+                      //
+                      ProductGridTile(
+                    medicineModel: displayProducts[i],
                   ),
-                  itemCount: state.medicines.length,
+                  itemCount: displayProducts.length,
                 ),
               ));
         }
-        return SizedBox();
+        return const SizedBox();
       },
     );
+  }
+
+  int total(List<CartModel> cartModels) {
+    int total = 0;
+    for (int i = 0; i < cartModels.length; i++) {
+      total += cartModels[i].qty;
+    }
+    return total;
+  }
+
+  void _showSearchBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: const Color(0xffEBE7DC),
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search),
+                  labelText: 'Search',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(32)),
+                ),
+                controller: _searchController,
+                onChanged: (value) {
+                  _filterProducts(value);
+                },
+              ),
+              const SizedBox(height: 16),
+              CustomKeyboard(
+                controller: _searchController,
+                onKeyPressed: (char) {
+                  if (char == 'ALL') {
+                    _searchController.clear();
+                    _filterProducts('');
+                  } else {
+                    setState(() {
+                      _searchController.text += char;
+                      _searchController.selection =
+                          TextSelection.fromPosition(TextPosition(
+                        offset: _searchController.text.length,
+                      ));
+                      _filterProducts(_searchController.text);
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _filterProducts(String query) {
+    if (query.isEmpty) {
+      // Show all products when query is empty
+      context.read<ProductBloc>().add(GetProducts());
+    } else {
+      context.read<ProductBloc>().add(SearchProducts(query: query));
+    }
   }
 }

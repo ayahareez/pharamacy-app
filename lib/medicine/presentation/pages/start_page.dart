@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pharmacy/user/presentation/pages/login_page.dart';
 
 class StartPage extends StatelessWidget {
+  const StartPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -9,9 +11,9 @@ class StartPage extends StatelessWidget {
         final double height = constraints.maxHeight;
         return Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size(double.infinity, 80),
+            preferredSize: const Size(double.infinity, 80),
             child: AppBar(
-              title: Text(
+              title: const Text(
                 'Pharmacy',
                 style: TextStyle(
                     fontFamily: 'CrimsonText-Regular',
@@ -29,10 +31,10 @@ class StartPage extends StatelessWidget {
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
-              Text(
+              const Text(
                 'Welcome to the Pharmacy',
                 style: TextStyle(
                     color: Colors.black,
@@ -41,13 +43,13 @@ class StartPage extends StatelessWidget {
                     fontSize: 24),
               ),
               Container(
-                margin: EdgeInsetsDirectional.all(16),
+                margin: const EdgeInsetsDirectional.all(16),
                 width: double.infinity,
                 height: 1,
                 color: Colors.grey[500],
               ),
               Container(
-                padding: EdgeInsetsDirectional.all(16),
+                padding: const EdgeInsetsDirectional.all(16),
                 child: Text(
                   'Homeopathy is a complementary medicine founded by the German physicist Samuel Hahnemann in the 1790s.'
                   ' It relies on the principle of "like cures like", meaning a'
@@ -65,27 +67,27 @@ class StartPage extends StatelessWidget {
                       fontSize: 14),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Container(
-                padding: EdgeInsetsDirectional.all(24),
+                padding: const EdgeInsetsDirectional.all(24),
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => LoginPage()));
                   },
-                  child: Text(
-                    'NEXT',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        fontFamily: 'CrimsonText-Regular'),
-                  ),
                   style: ElevatedButton.styleFrom(
                     //e8D0aa
                     //ffe8d6
                     backgroundColor: const Color(0xfff5e0c0),
                     foregroundColor: Colors.black,
+                  ),
+                  child: const Text(
+                    'NEXT',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        fontFamily: 'CrimsonText-Regular'),
                   ),
                 ),
               )

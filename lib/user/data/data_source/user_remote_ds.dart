@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pharmacy/core/remote_db_handler.dart';
 import 'package:pharmacy/user/data/models/user_model.dart';
 
-abstract class UsersDBModel {
+abstract class UsersRemoteDs {
   ///add user data to [FireStore]
   ///
   /// throw an error
@@ -17,14 +18,19 @@ abstract class UsersDBModel {
 
 const collectionName = 'users';
 
-class UserDBModelImp implements UsersDBModel {
+class UsersRemoteDsImp implements UsersRemoteDs {
   final RemoteDbHelper dbHelper;
 
-  UserDBModelImp({required this.dbHelper});
+  UsersRemoteDsImp({required this.dbHelper});
 
   @override
-  Future<void> addUser(UserModel userModel) =>
-      dbHelper.add(collectionName, userModel.toMap());
+  Future<void> addUser(UserModel userModel) {
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String userId = user != null ? user.uid : '';
+    final String nameDocumentId = '$userId';
+    return dbHelper.add(collectionName, userModel.toMap(),
+        documentId: nameDocumentId);
+  }
 
   @override
   Future<List<UserModel>> getUsers() async => List<UserModel>.from(
@@ -33,10 +39,10 @@ class UserDBModelImp implements UsersDBModel {
   Future<UserModel?> getUserByAuthId(String authId) async {
     final List<UserModel> users = await getUsers();
     users.forEach((user) {
-      print(user.id);
+      print(user.userId);
     });
     try {
-      return users.firstWhere((user) => user.id == authId);
+      return users.firstWhere((user) => user.userId == authId);
     } catch (e) {
       return null; // Return null if no matching user is found
     }

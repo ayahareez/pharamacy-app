@@ -7,6 +7,7 @@ import '../models/auth_model.dart';
 abstract class AuthinticationRemoteDs {
   Future<void> signIn(AuthModel userModel);
   Future<void> signUp(AuthModel userModel);
+  Future<void> signInAsGuest();
   Future<void> signOut();
   bool checkIfAuth();
   String getUserId();
@@ -21,7 +22,9 @@ class AuthinticationRemoteDsImpl extends AuthinticationRemoteDs {
 
   @override
   Future<void> signOut() async {
+    print('signout');
     await FirebaseAuth.instance.signOut();
+    print('after signout');
   }
 
   @override
@@ -42,5 +45,18 @@ class AuthinticationRemoteDsImpl extends AuthinticationRemoteDs {
       return user.uid;
     }
     return throw Exception('the user did\'t sign in');
+  }
+
+  @override
+  Future<void> signInAsGuest() async {
+    try {
+      print('guest');
+      // Sign in as a guest without authentication
+      await FirebaseAuth.instance.signInAnonymously();
+    } catch (e) {
+      // Handle any errors that occur during guest sign-in
+      print('Error signing in as a guest: $e');
+      throw Exception('Failed to sign in as a guest');
+    }
   }
 }

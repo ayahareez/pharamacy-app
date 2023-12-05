@@ -9,10 +9,13 @@ class SignIn extends AuthEvent {
 }
 
 class SignUp extends AuthEvent {
-  final AuthModel userModel;
-  SignUp({required this.userModel});
+  final AuthModel authModel;
+  final UserModel userModel;
+  SignUp({required this.authModel, required this.userModel});
 }
 
 class SignOut extends AuthEvent {}
 
 class CheckIfAuth extends AuthEvent {}
+
+class GuestSignIn extends AuthEvent {}

@@ -36,13 +36,21 @@ class SignUpPage extends StatelessWidget {
               key: formkey,
               child: Column(
                 children: [
-                  Container(
+                  SizedBox(
                     width: 200,
                     child: Lottie.asset(
                         'assets/animation/Animation - encaps.json'),
                   ),
                   const SizedBox(
                     height: 32,
+                  ),
+                  const Text(
+                    'Login',
+                    style: TextStyle(
+                        fontSize: 20, fontFamily: 'CrimsonText-Regular'),
+                  ),
+                  const SizedBox(
+                    height: 16.0,
                   ),
                   TextFormField(
                     controller: name,
@@ -115,13 +123,14 @@ class SignUpPage extends StatelessWidget {
                             email: email.text,
                           );
                           UserModel userModel =
-                              UserModel(name: name.text, id: '');
+                              UserModel(name: name.text, userId: '');
+                          context.read<AuthBloc>().add(SignUp(
+                              authModel: authModel, userModel: userModel));
+
                           context
                               .read<UserBloc>()
                               .add(SetUserEvent(userModel: userModel));
-                          context
-                              .read<AuthBloc>()
-                              .add(SignUp(userModel: authModel));
+
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(

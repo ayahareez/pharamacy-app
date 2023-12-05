@@ -1,121 +1,167 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:pharmacy/medicine/data/models/Checkout_model.dart';
+import 'package:pharmacy/medicine/data/models/cart_model.dart';
+import 'package:pharmacy/medicine/presentation/widgets/checkout_grid_tile.dart';
 
-class CheckoutPage extends StatelessWidget {
+import '../bloc/cart_bloc/cart_bloc.dart';
+import '../bloc/checkout_bloc/checkout_bloc.dart';
+
+class CheckoutPage extends StatefulWidget {
+  final List<CartModel> cartModels;
+
+  const CheckoutPage({Key? key, required this.cartModels}) : super(key: key);
+
+  @override
+  State<CheckoutPage> createState() => _CheckoutPageState();
+}
+
+class _CheckoutPageState extends State<CheckoutPage> {
   List<TextEditingController> controllers =
       List.generate(4, (_) => TextEditingController());
+
+  int total(List<CartModel> cartModels) {
+    int total = 0;
+    for (int i = 0; i < cartModels.length; i++) {
+      total += cartModels[i].qty;
+    }
+    return total;
+  }
+
+  int price(List<CartModel> cartModels) {
+    double total = 0;
+    for (int i = 0; i < cartModels.length; i++) {
+      for (int j = 0; j < cartModels[i].qty; j++) {
+        total += cartModels[i].medicineModel.price;
+      }
+    }
+    return total.toInt();
+  }
+
+  int theTotal = 0;
+
+  int thePrice = 0;
+  @override
+  void initState() {
+    theTotal = total(widget.cartModels);
+    thePrice = price(widget.cartModels);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Checkout',
-            style: TextStyle(fontSize: 24, fontFamily: 'CrimsonText-Regular')),
+        title: const Text(
+          'Checkout',
+          style: TextStyle(fontSize: 24, fontFamily: 'CrimsonText-Regular'),
+        ),
       ),
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return Padding(
-            padding: EdgeInsetsDirectional.only(
-                top: 32, start: 16, end: 16, bottom: 16),
-            child: Column(
-              children: [
-                Table(
-                  border: TableBorder.all(color: Colors.transparent),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    buildTableRow(
-                        ['QTY', 'PRODUCT NAME   ', '  PRICE'],
-                        TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'CrimsonText-Regular')),
-                    buildTableRow(
-                      ['2', 'Panadole', '  20 EGP'],
-                      TextStyle(
-                          fontSize: 16, fontFamily: 'CrimsonText-Regular'),
+                    // Quantity Column
+                    Container(
+                      width: 50,
+                      child: const Text(
+                        'QTY',
+                        style: TextStyle(
+                          fontFamily: 'CrimsonText-Regular',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
-                    buildTableRow(
-                        ['2', 'Abelmoschus 12C', '  140 EGP'],
-                        TextStyle(
-                            fontSize: 16, fontFamily: 'CrimsonText-Regular')),
-                    buildTableRow(
-                        ['3', 'panda', '  140 EGP'],
-                        TextStyle(
-                            fontSize: 16, fontFamily: 'CrimsonText-Regular')),
+                    const SizedBox(width: 24), // Adjust the spacing as needed
+
+                    // Product Name Column
+                    const Expanded(
+                      child: Text(
+                        'ProductName',
+                        style: TextStyle(
+                          fontFamily: 'CrimsonText-Regular',
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16), // Adjust the spacing as needed
+
+                    // Price Column
+                    Container(
+                      width: 100,
+                      child: const Text(
+                        'Price',
+                        style: TextStyle(
+                          fontFamily: 'CrimsonText-Regular',
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                Spacer(),
-                Container(
-                  width: double.infinity,
-                  height: 2,
-                  color: Color(0xffE2D2B8),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Total',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'CrimsonText-Regular',
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Spacer(),
-                      Text(
-                        '490 EGP',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'CrimsonText-Regular',
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () {
-                      // Show the overlay page
-                      _showOverlayPage(context);
-                    },
-                    child: Text(
-                      'CONFIRM ORDER',
-                      style: TextStyle(
-                          fontSize: 18, fontFamily: 'CrimsonText-Regular'),
-                    ),
-                    style: TextButton.styleFrom(
-                      backgroundColor: const Color(0xfff5e0c0),
-                      primary: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          );
-        },
-      ),
-    );
-  }
-
-  TableRow buildTableRow(List<String> cells, TextStyle style) {
-    return TableRow(
-      children: cells
-          .map(
-            (cell) => buildTableCell(cell, style),
-          )
-          .toList(),
-    );
-  }
-
-  TableCell buildTableCell(String text, TextStyle style) {
-    return TableCell(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          text,
-          style: style,
+            for (var cartModel in widget.cartModels)
+              CheckoutGridTile(cartModel: cartModel),
+            const Spacer(),
+            const Divider(
+              thickness: 2,
+              color: Color(0xffE2D2B8),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  const Text(
+                    'Total',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'CrimsonText-Regular'),
+                  ),
+                  const Spacer(),
+                  Text(
+                    '${thePrice} EGP',
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'CrimsonText-Regular'),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 64,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                onPressed: () {
+                  // Show the overlay page
+                  _showOverlayPage(context);
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xfff5e0c0),
+                  primary: Colors.black,
+                ),
+                child: const Text(
+                  'CONFIRM ORDER',
+                  style: TextStyle(
+                      fontSize: 18, fontFamily: 'CrimsonText-Regular'),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -131,52 +177,70 @@ class CheckoutPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color(0xffEBE7DC),
-          title: const Text('Delivery details'),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: nameController,
-                decoration: InputDecoration(labelText: 'Full Name'),
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: emailController,
-                decoration: InputDecoration(labelText: 'Email'),
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: phoneController,
-                decoration: InputDecoration(
-                  labelText: 'Phone Number',
+          backgroundColor: const Color(0xffDFD7C4),
+          title: const Center(
+            child: Text(
+              'Delivery details',
+              style: TextStyle(color: Color(0xff201E1F)),
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: 'Full Name'),
                 ),
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: notesController,
-                decoration: InputDecoration(labelText: 'Notes'),
-              ),
-            ],
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: phoneController,
+                  decoration: const InputDecoration(
+                    labelText: 'Phone Number',
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: notesController,
+                  decoration: const InputDecoration(labelText: 'Notes'),
+                ),
+              ],
+            ),
           ),
           actions: [
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Implement your logic for confirming the order
-                  // You can access the text form field values here
-                  for (int i = 0; i < controllers.length; i++) {
-                    print('Field ${i + 1}: ${controllers[i].text}');
-                  }
-                  Navigator.pop(context); // Close the overlay page
+                  int totalPrice = widget.cartModels.fold(0,
+                      (sum, cartModel) => sum + cartModel.medicineModel.price);
+                  DateTime now = DateTime.now();
+                  String formattedDate =
+                      DateFormat('yyyy-MM-dd  HH:mm:ss').format(now);
+                  CheckoutModel checkoutModel = CheckoutModel(
+                      cartModels: widget.cartModels,
+                      dateTime: formattedDate,
+                      fullName: nameController.text,
+                      phoneNumber: phoneController.text,
+                      total: totalPrice);
+                  context
+                      .read<CheckoutBloc>()
+                      .add(SetOrder(checkoutModel: checkoutModel));
+                  Navigator.pop(context);
+                  context.read<CartBloc>().add(DeleteCartsForUser());
                 },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                child: Text(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff201E1F)),
+                child: const Text(
                   'Confirm',
-                  style: TextStyle(color: Color(0xffEBE7DC)),
+                  style: TextStyle(color: Color(0xffDFD7C4)),
                 ),
               ),
             ),

@@ -1,87 +1,156 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy/medicine/presentation/pages/checkout_page.dart';
+import 'package:pharmacy/medicine/presentation/pages/contoller_page.dart';
 import 'package:pharmacy/medicine/presentation/widgets/your_cart_grid_tile.dart';
 
+import '../../data/models/cart_model.dart';
+import '../bloc/cart_bloc/cart_bloc.dart';
+
 class YourCartPage extends StatefulWidget {
+  const YourCartPage({super.key});
+
   @override
   State<YourCartPage> createState() => _YourCartPageState();
 }
 
 class _YourCartPageState extends State<YourCartPage> {
+  bool cartFetched = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!cartFetched) {
+      context.read<CartBloc>().add(GetCart());
+      cartFetched = true;
+    }
+  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   context.read<CartBloc>().add(GetCart());
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_outlined),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ControllerPage()));
+          },
+        ),
+        title: const Text(
           'Your Cart',
           style: TextStyle(fontSize: 24),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsetsDirectional.all(8),
-        child: Stack(
-          alignment: AlignmentDirectional.bottomCenter,
-          children: [
-            ListView.separated(
-              itemBuilder: (_, i) => YourCartGridTile(),
-              itemCount: 3,
-              separatorBuilder: (_, i) => SizedBox(
-                height: 8,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+      body: BlocBuilder<CartBloc, CartState>(
+        builder: (context, state) {
+          print(state);
+          if (state is CartLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is CartLoaded) {
+            int theTotal = total(state.cartModels);
+            int thePrice = price(state.cartModels);
+            return Padding(
+              padding: const EdgeInsetsDirectional.all(8),
+              child: Stack(
+                alignment: AlignmentDirectional.bottomCenter,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        'Total',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'CrimsonText-Regular'),
-                      ),
-                      Spacer(),
-                      Text(
-                        '490 EGP',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'CrimsonText-Regular'),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CheckoutPage()));
-                      },
-                      child: Text(
-                        'PROCEED TO CHECKOUT',
-                        style: const TextStyle(
-                            fontSize: 16, fontFamily: 'CrimsonText-Regular'),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        //e8D0aa
-                        //ffe8d6
-                        backgroundColor: const Color(0xfff5e0c0),
-                        foregroundColor: Colors.black,
-                      ),
+                  ListView.separated(
+                    itemBuilder: (_, i) => YourCartGridTile(
+                      cartModel: state.cartModels[i],
                     ),
-                  )
+                    itemCount: state.cartModels.length,
+                    separatorBuilder: (_, i) => const SizedBox(
+                      height: 8,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              '${theTotal}',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'CrimsonText-Regular'),
+                            ),
+                            const Spacer(),
+                            Text(
+                              '${thePrice} EGP',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'CrimsonText-Regular'),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CheckoutPage(
+                                            cartModels: state.cartModels,
+                                          )));
+                            },
+                            style: ElevatedButton.styleFrom(
+                              //e8D0aa
+                              //ffe8d6
+                              backgroundColor: const Color(0xfff5e0c0),
+                              foregroundColor: Colors.black,
+                            ),
+                            child: const Text(
+                              'PROCEED TO CHECKOUT',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: 'CrimsonText-Regular'),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ],
-        ),
+            );
+          }
+          return const SizedBox();
+        },
       ),
     );
+  }
+
+  int total(List<CartModel> cartModels) {
+    int total = 0;
+    for (int i = 0; i < cartModels.length; i++) {
+      total += cartModels[i].qty;
+    }
+    return total;
+  }
+
+  int price(List<CartModel> cartModels) {
+    double total = 0;
+    for (int i = 0; i < cartModels.length; i++) {
+      for (int j = 0; j < cartModels[i].qty; j++) {
+        total += cartModels[i].medicineModel.price;
+      }
+    }
+    return total.toInt();
   }
 }
