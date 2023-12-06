@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pharmacy/medicine/presentation/pages/history_page.dart';
+import 'package:pharmacy/medicine/presentation/pages/ongoing_page.dart';
 import 'package:pharmacy/medicine/presentation/pages/your_cart_page.dart';
 import 'package:pharmacy/medicine/presentation/widgets/product_grid_tile.dart';
+import 'package:pharmacy/user/presentation/pages/login_page.dart';
 
 import '../../../user/data/models/user_model.dart';
+import '../../../user/presentation/bloc/auth/auth_bloc.dart';
 import '../../../user/presentation/bloc/user_data/user_bloc.dart';
 import '../bloc/medicine_bloc/product_bloc.dart';
 
@@ -47,7 +51,6 @@ class _KitsPageState extends State<KitsPage> {
                 ),
                 title: const Text(
                   'M\'s Remedies',
-                  style: TextStyle(fontSize: 24, fontFamily: 'MyFont'),
                 ),
                 actions: [
                   IconButton(
@@ -69,7 +72,7 @@ class _KitsPageState extends State<KitsPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => YourCartPage()));
+                                  builder: (context) => const YourCartPage()));
                         },
                       ),
                       const CircleAvatar(
@@ -114,11 +117,44 @@ class _KitsPageState extends State<KitsPage> {
                             child: Container(
                               height: 50,
                               alignment: AlignmentDirectional.center,
-                              child: Text('${state.usersModel.name}',
-                                  style: const TextStyle(
-                                      fontFamily: 'CrimsonText-Regular',
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 26)),
+                              child: Column(
+                                children: [
+                                  Text('${state.usersModel.name}',
+                                      style: const TextStyle(
+                                          fontFamily: 'CrimsonText-Regular',
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 26)),
+                                  const Spacer(),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          context
+                                              .read<AuthBloc>()
+                                              .add(SignOut());
+                                          Navigator.popUntil(
+                                            context,
+                                            (_) => false,
+                                          );
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const LoginPage()));
+                                        },
+                                        child: const Text('LogOut',
+                                            style: TextStyle(
+                                                fontFamily:
+                                                    'CrimsonText-Regular',
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18)),
+                                      ),
+                                      const Icon(Icons.logout),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           Padding(
@@ -131,13 +167,12 @@ class _KitsPageState extends State<KitsPage> {
                                     const Icon(Icons.history_toggle_off),
                                     TextButton(
                                       onPressed: () {
-                                        // Handle the first button tap
-                                        Navigator.pop(
-                                            context); // Close the drawer if needed
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(builder: (context) => FirstPage()),
-                                        // );
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const OngoingPage()),
+                                        );
                                       },
                                       child: const Text('Ongoing',
                                           style: TextStyle(
@@ -154,13 +189,11 @@ class _KitsPageState extends State<KitsPage> {
                                     const Icon(Icons.history),
                                     TextButton(
                                       onPressed: () {
-                                        // Handle the second button tap
-                                        Navigator.pop(
-                                            context); // Close the drawer if needed
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(builder: (context) => SecondPage()),
-                                        // );
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    HistoryPage()));
                                       },
                                       child: const Text('History',
                                           style: TextStyle(
@@ -174,7 +207,6 @@ class _KitsPageState extends State<KitsPage> {
                               ],
                             ),
                           ),
-                          // Add more ListTile widgets for additional menu items
                         ],
                       ),
                     );
@@ -193,12 +225,6 @@ class _KitsPageState extends State<KitsPage> {
                   itemBuilder: (_, i) =>
                       //
                       ProductGridTile(
-                    // cartModel: CartModel(
-                    //     medicineModel: state.medicineModels[i],
-                    //     id: '',
-                    //     qty: 0,
-                    //     userId: ''),
-                    //
                     medicineModel: state.products[i],
                   ),
                   itemCount: state.products.length,

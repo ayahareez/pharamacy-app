@@ -26,25 +26,19 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order Details',
-            style: TextStyle(
-                fontFamily: 'CrimsonText-Regular',
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontSize: 24)),
+        title: const Text(
+          'Order Details',
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
+        child: SizedBox(
           width: double.infinity,
           child: Column(
             children: [
               Text('${widget.checkoutModel.fullName}\'s Orders',
-                  style: TextStyle(
-                      fontFamily: 'CrimsonText-Regular',
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 22)),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 22)),
               SizedBox(
                 height: 500,
                 child: ListView.builder(
@@ -54,8 +48,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   itemCount: widget.checkoutModel.cartModels.length,
                 ),
               ),
-              Spacer(),
-              Divider(
+              const Spacer(),
+              const Divider(
                 thickness: 2,
               ),
               Padding(
@@ -65,34 +59,22 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   children: [
                     Row(
                       children: [
-                        Text('Date Of Order :  ',
+                        const Text('Date Of Order :  ',
                             style: TextStyle(
-                                fontFamily: 'CrimsonText-Regular',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                                fontSize: 22)),
+                                fontWeight: FontWeight.bold, fontSize: 22)),
                         Text('${widget.checkoutModel.dateTime}',
-                            style: TextStyle(
-                                fontFamily: 'CrimsonText-Regular',
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                                fontSize: 18))
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 18))
                       ],
                     ),
                     Row(
                       children: [
-                        Text('Total :  ',
+                        const Text('Total :  ',
                             style: TextStyle(
-                                fontFamily: 'CrimsonText-Regular',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                                fontSize: 22)),
+                                fontWeight: FontWeight.bold, fontSize: 22)),
                         Text('${widget.checkoutModel.total}',
-                            style: TextStyle(
-                                fontFamily: 'CrimsonText-Regular',
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                                fontSize: 18))
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 18))
                       ],
                     ),
                   ],

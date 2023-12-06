@@ -16,9 +16,8 @@ class StartPage extends StatelessWidget {
               title: const Text(
                 'Pharmacy',
                 style: TextStyle(
-                    fontFamily: 'CrimsonText-Regular',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               centerTitle: true,
             ),

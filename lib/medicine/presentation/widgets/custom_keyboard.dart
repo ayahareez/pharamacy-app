@@ -4,13 +4,14 @@ class CustomKeyboard extends StatelessWidget {
   final TextEditingController controller;
   final Function(String) onKeyPressed;
 
-  const CustomKeyboard({required this.controller, required this.onKeyPressed});
+  const CustomKeyboard(
+      {super.key, required this.controller, required this.onKeyPressed});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
           crossAxisSpacing: 8.0,
           mainAxisSpacing: 8.0,
@@ -29,7 +30,7 @@ class CustomKeyboard extends StatelessWidget {
                   color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Text('ALL'),
+                child: const Text('ALL'),
               ),
             );
           } else {

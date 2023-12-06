@@ -9,12 +9,9 @@ class ProductInfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${productModel.productName}',
-            style: TextStyle(
-                fontFamily: 'CrimsonText-Regular',
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontSize: 24)),
+        title: Text(
+          '${productModel.productName}',
+        ),
         centerTitle: true,
       ),
       body: Container(
@@ -33,21 +30,15 @@ class ProductInfoPage extends StatelessWidget {
                 height: 16,
               ),
               Text('${productModel.description}',
-                  style: TextStyle(
-                      fontFamily: 'CrimsonText-Regular',
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 22)),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 22)),
               const SizedBox(
                 height: 8,
               ),
               Text(
                 'Price :  ${productModel.price}',
-                style: TextStyle(
-                    fontFamily: 'CrimsonText-Regular',
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 18),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               const SizedBox(
                 height: 16,

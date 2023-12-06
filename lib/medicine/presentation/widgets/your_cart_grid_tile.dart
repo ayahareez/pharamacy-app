@@ -29,7 +29,7 @@ class _YourCartGridTileState extends State<YourCartGridTile> {
       builder: (context, state) {
         print(state);
         if (state is CartLoading) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (state is CartLoaded) {
           for (int i = 0; i < state.cartModels.length; i++) {
             if (state.cartModels[i].medicineModel.productId ==
@@ -38,92 +38,79 @@ class _YourCartGridTileState extends State<YourCartGridTile> {
               cartModel = state.cartModels[i];
             }
           }
-          return Container(
-            child: Row(
-              children: [
-                Expanded(
-                    child: Container(
-                  height: 120,
-                  padding: EdgeInsetsDirectional.all(16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        bottomLeft: Radius.circular(16)),
-                    color: Colors.white,
-                  ),
-                  child: Image.asset(
-                    '${widget.cartModel.medicineModel.imageUrl}',
-                    fit: BoxFit.cover,
-                  ),
-                )),
-                Expanded(
-                  flex: 2,
+          return Row(
+            children: [
+              Expanded(
                   child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(16),
-                          bottomRight: Radius.circular(16)),
-                      color: Color(0xffE2D2B8),
-                    ),
-                    padding:
-                        EdgeInsetsDirectional.only(start: 8, bottom: 8, top: 8),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${widget.cartModel.medicineModel.productName}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey[900],
-                              fontFamily: 'CrimsonText-Regular'),
+                height: 120,
+                padding: const EdgeInsetsDirectional.all(16),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      bottomLeft: Radius.circular(16)),
+                  color: Colors.white,
+                ),
+                child: Image.asset(
+                  widget.cartModel.medicineModel.imageUrl,
+                  fit: BoxFit.cover,
+                ),
+              )),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(16),
+                        bottomRight: Radius.circular(16)),
+                    color: Color(0xffE2D2B8),
+                  ),
+                  padding: const EdgeInsetsDirectional.only(
+                      start: 8, bottom: 8, top: 8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.cartModel.medicineModel.productName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey[900],
                         ),
-                        SizedBox(
-                          height: 8,
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        '${widget.cartModel.medicineModel.price} EGP',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.grey[900],
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
                         ),
-                        Text(
-                          '${widget.cartModel.medicineModel.price} EGP',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              color: Colors.grey[900],
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              fontFamily: 'CrimsonText-Regular'),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        Row(
-                          children: [
-                            InkWell(
-                                child: CircleAvatar(
-                                  child: Icon(
-                                    Icons.remove,
-                                    size: 24,
-                                  ),
-                                  radius: 16,
-                                  backgroundColor: Colors.white,
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      Row(
+                        children: [
+                          InkWell(
+                              child: const CircleAvatar(
+                                radius: 16,
+                                backgroundColor: Colors.white,
+                                child: Icon(
+                                  Icons.remove,
+                                  size: 24,
                                 ),
-                                onTap: () {
-                                  setState(() {
-                                    if (qty <= 0) {
-                                      qty = 0;
-                                      for (int i = 0;
-                                          i < state.cartModels.length;
-                                          i++) {
-                                        if (state.cartModels[i].medicineModel
-                                                .productId ==
-                                            widget.cartModel.medicineModel
-                                                .productId) {
-                                          state.cartModels[i].qty = qty;
-                                        }
-                                      }
-                                    } else
-                                      qty--;
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  if (qty <= 0) {
+                                    qty = 0;
                                     for (int i = 0;
                                         i < state.cartModels.length;
                                         i++) {
@@ -134,57 +121,22 @@ class _YourCartGridTileState extends State<YourCartGridTile> {
                                         state.cartModels[i].qty = qty;
                                       }
                                     }
-                                    //cartModel!.qty = qty;
-                                  });
-                                  if (qty == 0) {
-                                    context.read<CartBloc>().add(DeleteCart(
-                                        cartModel: cartModel ??
-                                            CartModel(
-                                                qty: qty,
-                                                medicineModel: widget
-                                                    .cartModel.medicineModel,
-                                                userId: '',
-                                                id: '')));
-                                  } else {
-                                    context.read<CartBloc>().add(UpdateCart(
-                                        cartModel: cartModel ??
-                                            CartModel(
-                                                qty: qty,
-                                                medicineModel: widget
-                                                    .cartModel.medicineModel,
-                                                userId: '',
-                                                id: '')));
+                                  } else
+                                    qty--;
+                                  for (int i = 0;
+                                      i < state.cartModels.length;
+                                      i++) {
+                                    if (state.cartModels[i].medicineModel
+                                            .productId ==
+                                        widget.cartModel.medicineModel
+                                            .productId) {
+                                      state.cartModels[i].qty = qty;
+                                    }
                                   }
-                                }),
-                            SizedBox(
-                              width: 16,
-                            ),
-                            Text(
-                              '${widget.cartModel.qty}',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.black),
-                            ),
-                            SizedBox(
-                              width: 16,
-                            ),
-                            InkWell(
-                              child: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                child: Icon(
-                                  Icons.add,
-                                  size: 24,
-                                ),
-                                radius: 16,
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  qty++;
-                                  print(qty);
-                                  cartModel!.qty = qty;
+                                  //cartModel!.qty = qty;
                                 });
-
-                                if (qty == 1) {
-                                  context.read<CartBloc>().add(SetCart(
+                                if (qty == 0) {
+                                  context.read<CartBloc>().add(DeleteCart(
                                       cartModel: cartModel ??
                                           CartModel(
                                               qty: qty,
@@ -192,7 +144,6 @@ class _YourCartGridTileState extends State<YourCartGridTile> {
                                                   .cartModel.medicineModel,
                                               userId: '',
                                               id: '')));
-                                  print(qty);
                                 } else {
                                   context.read<CartBloc>().add(UpdateCart(
                                       cartModel: cartModel ??
@@ -203,19 +154,67 @@ class _YourCartGridTileState extends State<YourCartGridTile> {
                                               userId: '',
                                               id: '')));
                                 }
-                              },
+                              }),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Text(
+                            '${widget.cartModel.qty}',
+                            style: const TextStyle(
+                              fontSize: 16,
                             ),
-                          ],
-                        )
-                      ],
-                    ),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          InkWell(
+                            child: const CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 16,
+                              child: Icon(
+                                Icons.add,
+                                size: 24,
+                              ),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                qty++;
+                                print(qty);
+                                cartModel!.qty = qty;
+                              });
+
+                              if (qty == 1) {
+                                context.read<CartBloc>().add(SetCart(
+                                    cartModel: cartModel ??
+                                        CartModel(
+                                            qty: qty,
+                                            medicineModel:
+                                                widget.cartModel.medicineModel,
+                                            userId: '',
+                                            id: '')));
+                                print(qty);
+                              } else {
+                                context.read<CartBloc>().add(UpdateCart(
+                                    cartModel: cartModel ??
+                                        CartModel(
+                                            qty: qty,
+                                            medicineModel:
+                                                widget.cartModel.medicineModel,
+                                            userId: '',
+                                            id: '')));
+                              }
+                            },
+                          ),
+                        ],
+                      )
+                    ],
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           );
         }
-        return SizedBox();
+        return const SizedBox();
       },
     );
   }

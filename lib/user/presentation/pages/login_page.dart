@@ -50,8 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                       const Center(
                         child: Text(
                           'Pharmacy',
-                          style: TextStyle(
-                              fontSize: 24, fontFamily: 'CrimsonText-Regular'),
+                          style: TextStyle(fontSize: 24),
                         ),
                       ),
                       const SizedBox(
@@ -59,9 +58,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Center(
                         child: SvgPicture.asset(
-                          'assets/images/undraw_medical_care_movn.svg', // Replace with the path to your SVG file
-                          width: 200.0, // Adjust the width as needed
-                          height: 200.0, // Adjust the height as needed
+                          'assets/images/undraw_medical_care_movn.svg',
+                          width: 200.0,
+                          height: 200.0,
                         ),
                       ),
                       const SizedBox(
@@ -70,9 +69,9 @@ class _LoginPageState extends State<LoginPage> {
                       const Text(
                         'Login',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                            fontFamily: 'CrimsonText-Regular'),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                        ),
                       ),
                       const SizedBox(
                         height: 16.0,
@@ -83,9 +82,9 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                           labelText: 'Email',
                           labelStyle: const TextStyle(
-                              color: Color(0xff212529),
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'CrimsonText-Regular'),
+                            color: Color(0xff212529),
+                            fontWeight: FontWeight.bold,
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -116,9 +115,9 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                           labelText: 'Password',
                           labelStyle: const TextStyle(
-                              color: Color(0xff212529),
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'CrimsonText-Regular'),
+                            color: Color(0xff212529),
+                            fontWeight: FontWeight.bold,
+                          ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8)),
                           prefixIcon: const Icon(
@@ -173,16 +172,12 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () {
                             context.read<AuthBloc>().add(GuestSignIn());
                             setState(() {});
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (_) => ControllerPage()));
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xfff5e0c0)),
-                          child: const Text('login as geust',
+                          child: const Text('Login as guest',
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 18,
                                   color: Colors.black,
                                   fontWeight: FontWeight.w500,
                                   fontFamily: 'CrimsonText-Regular')),
@@ -197,9 +192,8 @@ class _LoginPageState extends State<LoginPage> {
                           const Text(
                             'Don\'t have an account ? ',
                             style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black,
-                                fontFamily: 'CrimsonText-Regular'),
+                              fontSize: 18,
+                            ),
                           ),
                           TextButton(
                             onPressed: () {

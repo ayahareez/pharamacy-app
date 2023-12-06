@@ -9,7 +9,6 @@ class OngoingPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Ongoing Orders',
-          style: TextStyle(fontSize: 24),
         ),
       ),
       body: ListView.builder(
@@ -21,24 +20,16 @@ class OngoingPage extends StatelessWidget {
             child: ListTile(
               title: Text(
                 'Order #${index + 1}',
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'CrimsonText-Regular',
-                    fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
                   'Expected Delivery: ${DateTime.now().add(const Duration(days: 2)).toString()}'), // Replace with actual expected delivery date
               trailing: ElevatedButton(
-                onPressed: () {
-                  // Handle tapping on the button, for example, navigate to order details
-                  // You can replace this with your specific logic
-                  print('Order Details Button Pressed');
-                },
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xffEBE7DC)),
                 child: const Text(
                   'Order Details',
-                  style: TextStyle(color: Colors.black),
                 ),
               ),
             ),

@@ -55,7 +55,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
       appBar: AppBar(
         title: const Text(
           'Checkout',
-          style: TextStyle(fontSize: 24, fontFamily: 'CrimsonText-Regular'),
         ),
       ),
       body: Padding(
@@ -76,7 +75,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       child: const Text(
                         'QTY',
                         style: TextStyle(
-                          fontFamily: 'CrimsonText-Regular',
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                         ),
@@ -89,7 +87,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       child: Text(
                         'ProductName',
                         style: TextStyle(
-                          fontFamily: 'CrimsonText-Regular',
                           fontSize: 18,
                         ),
                       ),
@@ -102,7 +99,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       child: const Text(
                         'Price',
                         style: TextStyle(
-                          fontFamily: 'CrimsonText-Regular',
                           fontSize: 18,
                         ),
                       ),
@@ -125,17 +121,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   const Text(
                     'Total',
                     style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'CrimsonText-Regular'),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const Spacer(),
                   Text(
                     '${thePrice} EGP',
                     style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'CrimsonText-Regular'),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
@@ -147,7 +141,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
               width: double.infinity,
               child: TextButton(
                 onPressed: () {
-                  // Show the overlay page
                   _showOverlayPage(context);
                 },
                 style: TextButton.styleFrom(

@@ -26,13 +26,12 @@ class _HistoryPageState extends State<HistoryPage> {
       appBar: AppBar(
         title: const Text(
           'Order History',
-          style: TextStyle(fontSize: 24),
         ),
       ),
       body: BlocBuilder<CheckoutBloc, CheckoutState>(
         builder: (context, state) {
           if (state is CheckoutLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (state is CheckoutLoaded) {
             return ListView.builder(
@@ -42,7 +41,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   index: index, checkoutModel: state.checkoutModels[index]),
             );
           }
-          return SizedBox(
+          return const SizedBox(
             child: Text('error'),
           );
         },

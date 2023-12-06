@@ -26,26 +26,12 @@ class _YourCartPageState extends State<YourCartPage> {
     }
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   context.read<CartBloc>().add(GetCart());
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_outlined),
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ControllerPage()));
-          },
-        ),
         title: const Text(
           'Your Cart',
-          style: TextStyle(fontSize: 24),
         ),
       ),
       body: BlocBuilder<CartBloc, CartState>(
@@ -81,17 +67,15 @@ class _YourCartPageState extends State<YourCartPage> {
                             Text(
                               '${theTotal}',
                               style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: 'CrimsonText-Regular'),
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                             const Spacer(),
                             Text(
                               '${thePrice} EGP',
                               style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: 'CrimsonText-Regular'),
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ],
                         ),
@@ -110,16 +94,14 @@ class _YourCartPageState extends State<YourCartPage> {
                                           )));
                             },
                             style: ElevatedButton.styleFrom(
-                              //e8D0aa
-                              //ffe8d6
                               backgroundColor: const Color(0xfff5e0c0),
                               foregroundColor: Colors.black,
                             ),
                             child: const Text(
                               'PROCEED TO CHECKOUT',
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontFamily: 'CrimsonText-Regular'),
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                         )

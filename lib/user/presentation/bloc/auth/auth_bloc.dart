@@ -17,6 +17,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required this.usersDBModel, required this.authinticationRemoteDs})
       : super(UserUnauthorized()) {
     on<AuthEvent>((event, emit) async {
+      print(event);
       try {
         if (event is SignUp) {
           emit(UserLoadingState());

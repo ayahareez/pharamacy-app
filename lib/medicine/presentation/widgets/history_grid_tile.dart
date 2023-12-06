@@ -15,19 +15,15 @@ class HistoryGridTile extends StatelessWidget {
       child: ListTile(
         title: Text(
           'Order #${index + 1}',
-          style: const TextStyle(
-              color: Colors.black,
-              fontFamily: 'CrimsonText-Regular',
-              fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        subtitle:
-            Text('Date: ${checkoutModel.dateTime}'), // Replace with actual date
+        subtitle: Text(
+          'Date: ${checkoutModel.dateTime}',
+          style: const TextStyle(fontSize: 16, color: Color(0xff43291f)),
+        ), // Replace with actual date
         trailing: Text(
           'Total: ${checkoutModel.total}',
-          style: const TextStyle(
-              color: Colors.black,
-              fontFamily: 'CrimsonText-Regular',
-              fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ), // Replace with actual total
         onTap: () {
           Navigator.push(

@@ -71,23 +71,42 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+        buttonTheme: const ButtonThemeData(
+          buttonColor: Color(0xfff5e0c0),
+        ),
+        drawerTheme: const DrawerThemeData(
+          backgroundColor: Color(0xffEBE7DC),
+          width: 200,
+        ),
         textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: Colors.black),
-          bodyMedium: TextStyle(color: Colors.black),
+          bodyLarge: TextStyle(
+            color: Colors.black,
+            fontFamily: 'CrimsonText-Regular',
+          ),
+          bodyMedium: TextStyle(
+            color: Colors.black,
+            fontFamily: 'CrimsonText-Regular',
+          ),
           displayLarge: TextStyle(
-            color: Colors.blue,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            fontFamily: 'CrimsonText-Regular',
           ),
         ),
         appBarTheme: const AppBarTheme(
+            titleTextStyle: TextStyle(
+              color: Colors.black,
+              fontFamily: 'CrimsonText-Regular',
+              fontSize: 24,
+            ),
             backgroundColor: Color(0xffE8D9C4),
             foregroundColor: Color(0xff212529)),
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepPurple, background: const Color(0xffEBE7DC)),
+          seedColor: Colors.red,
+          background: const Color(0xffEBE7DC),
+        ),
         useMaterial3: true,
       ),
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
 }

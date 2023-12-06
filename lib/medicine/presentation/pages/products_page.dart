@@ -32,18 +32,19 @@ class _ProductsPageState extends State<ProductsPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!cartFetched) {
+      _initializeData();
       context.read<ProductBloc>().add(GetProducts());
       cartFetched = true;
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _initializeData();
-    context.read<ProductBloc>().add(GetProducts());
-    //context.read<CartBloc>().add(GetCart());
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   context.read<ProductBloc>().add(GetProducts());
+  //   //context.read<CartBloc>().add(GetCart());
+  // }
 
   Future<void> _initializeData() async {
     context.read<UserBloc>().add(GetUserEvent());
@@ -51,8 +52,8 @@ class _ProductsPageState extends State<ProductsPage> {
     if (user != null) {
       userId = user.uid;
     }
-    print(userId);
-    print('aya');
+    // print(userId);
+    // print('aya');
   }
 
   @override
@@ -87,7 +88,9 @@ class _ProductsPageState extends State<ProductsPage> {
                 ),
                 title: const Text(
                   'M\'s Remedies',
-                  style: TextStyle(fontSize: 24, fontFamily: 'MyFont'),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 actions: [
                   IconButton(
@@ -111,7 +114,7 @@ class _ProductsPageState extends State<ProductsPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => YourCartPage()));
+                                  builder: (context) => const YourCartPage()));
                         },
                       ),
                       CircleAvatar(
@@ -158,116 +161,110 @@ class _ProductsPageState extends State<ProductsPage> {
                     } else {
                       print('No matching element found');
                     }
-                    return BlocListener<AuthBloc, AuthState>(
-                      listener: (context, state) {
-                        if (state is UserUnauthorized) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()),
-                          );
-                        }
-                      },
-                      child: Drawer(
-                        child: ListView(
-                          padding: EdgeInsets.zero,
-                          children: [
-                            DrawerHeader(
-                              margin:
-                                  const EdgeInsetsDirectional.only(bottom: 16),
-                              decoration: const BoxDecoration(
-                                color: Color(0xffe4d4c5),
-                              ),
-                              child: Container(
-                                height: 50,
-                                alignment: AlignmentDirectional.center,
-                                child: Column(
-                                  children: [
-                                    Text('${state.usersModel.name}',
-                                        style: const TextStyle(
-                                            fontFamily: 'CrimsonText-Regular',
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 26)),
-                                    const Spacer(),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        TextButton(
-                                          onPressed: () {
-                                            context
-                                                .read<AuthBloc>()
-                                                .add(SignOut());
-                                          },
-                                          child: const Text('LogOut',
-                                              style: TextStyle(
-                                                  fontFamily:
-                                                      'CrimsonText-Regular',
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                  fontSize: 18)),
-                                        ),
-                                        const Icon(Icons.logout),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
+                    return Drawer(
+                      child: ListView(
+                        padding: EdgeInsets.zero,
+                        children: [
+                          DrawerHeader(
+                            margin:
+                                const EdgeInsetsDirectional.only(bottom: 16),
+                            decoration: const BoxDecoration(
+                              color: Color(0xffe4d4c5),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 50,
+                              alignment: AlignmentDirectional.center,
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Text(state.usersModel.name,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 26)),
+                                  const Spacer(),
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      const Icon(Icons.history_toggle_off),
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.push(
+                                          Navigator.popUntil(
                                             context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    OngoingPage()),
+                                            (_) => false,
                                           );
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const LoginPage()));
+                                          context
+                                              .read<AuthBloc>()
+                                              .add(SignOut());
                                         },
-                                        child: const Text('Ongoing',
+                                        child: const Text('LogOut',
                                             style: TextStyle(
                                                 fontFamily:
                                                     'CrimsonText-Regular',
                                                 fontWeight: FontWeight.bold,
-                                                color: Colors.black,
                                                 fontSize: 18)),
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.history),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const HistoryPage()),
-                                          );
-                                        },
-                                        child: const Text('History',
-                                            style: TextStyle(
-                                                fontFamily:
-                                                    'CrimsonText-Regular',
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                                fontSize: 18)),
-                                      ),
+                                      const Icon(Icons.logout),
                                     ],
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.history_toggle_off),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const OngoingPage()),
+                                        );
+                                      },
+                                      child: const Text('Ongoing',
+                                          style: TextStyle(
+                                              fontFamily: 'CrimsonText-Regular',
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontSize: 18)),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.history),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const HistoryPage()),
+                                        );
+                                      },
+                                      child: const Text('History',
+                                          style: TextStyle(
+                                              fontFamily: 'CrimsonText-Regular',
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              fontSize: 18)),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   }

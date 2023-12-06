@@ -26,7 +26,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           //print("$carts looooooool");
           emit(CartLoaded(cartModels: carts));
         } else if (event is UpdateCart) {
-          emit(CartLoading());
           await cartRemoteDs.updateCart(event.cartModel);
           List<CartModel> carts = await cartRemoteDs.getCartsForUser();
           emit(CartLoaded(cartModels: carts));

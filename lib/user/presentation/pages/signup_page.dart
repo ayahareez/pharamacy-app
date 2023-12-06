@@ -22,10 +22,6 @@ class SignUpPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Sign Up',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
         ),
       ),
       body: Padding(
@@ -44,11 +40,6 @@ class SignUpPage extends StatelessWidget {
                   const SizedBox(
                     height: 32,
                   ),
-                  const Text(
-                    'Login',
-                    style: TextStyle(
-                        fontSize: 20, fontFamily: 'CrimsonText-Regular'),
-                  ),
                   const SizedBox(
                     height: 16.0,
                   ),
@@ -57,9 +48,7 @@ class SignUpPage extends StatelessWidget {
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       labelText: 'Name',
-                      labelStyle: TextStyle(
-                          fontFamily: 'CrimsonText-Regular',
-                          fontWeight: FontWeight.bold),
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.person, color: Color(0xffd4a276)),
                     ),
@@ -77,9 +66,7 @@ class SignUpPage extends StatelessWidget {
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       labelText: 'Email',
-                      labelStyle: TextStyle(
-                          fontFamily: 'CrimsonText-Regular',
-                          fontWeight: FontWeight.bold),
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.email, color: Color(0xffd4a276)),
                     ),
@@ -98,16 +85,18 @@ class SignUpPage extends StatelessWidget {
                     obscureText: true,
                     decoration: const InputDecoration(
                       labelText: 'Password',
-                      labelStyle: TextStyle(
-                          fontFamily: 'CrimsonText-Regular',
-                          fontWeight: FontWeight.bold),
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.lock, color: Color(0xffd4a276)),
                     ),
                     validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Password must be entered';
+                      if (value == null || value.isEmpty) {
+                        return 'password must be entered';
                       }
+                      if (value.length < 8) {
+                        return 'password length can not be less than 8';
+                      }
+                      return null;
                     },
                   ),
                   const SizedBox(
@@ -137,6 +126,9 @@ class SignUpPage extends StatelessWidget {
                                   builder: (context) => ControllerPage()));
                         }
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xfff5e0c0),
+                      ),
                       child: const Text(
                         'Sign Up',
                         style: TextStyle(
@@ -145,9 +137,6 @@ class SignUpPage extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           fontFamily: 'CrimsonText-Regular',
                         ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xfff5e0c0),
                       ),
                     ),
                   ),
