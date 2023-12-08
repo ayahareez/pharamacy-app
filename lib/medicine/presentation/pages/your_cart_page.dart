@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy/medicine/presentation/pages/checkout_page.dart';
 import 'package:pharmacy/medicine/presentation/pages/contoller_page.dart';
+import 'package:pharmacy/medicine/presentation/pages/products_page.dart';
 import 'package:pharmacy/medicine/presentation/widgets/your_cart_grid_tile.dart';
 
 import '../../data/models/cart_model.dart';
@@ -33,6 +34,13 @@ class _YourCartPageState extends State<YourCartPage> {
         title: const Text(
           'Your Cart',
         ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.arrow_back_outlined),
+        //   onPressed: () {
+        //     Navigator.push(context,
+        //         MaterialPageRoute(builder: (context) => ProductsPage()));
+        //   },
+        // ),
       ),
       body: BlocBuilder<CartBloc, CartState>(
         builder: (context, state) {

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:pharmacy/user/presentation/bloc/user_data/user_bloc.dart';
 
 import '../../../data/data_source/auth_remote_ds.dart';
 import '../../../data/data_source/user_remote_ds.dart';
@@ -49,13 +50,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(UserLoadingState());
           print('from GuestSignIn');
           await authinticationRemoteDs.signInAsGuest();
-          emit(UserAuthorizedState());
+          emit(UserAnonymousState());
         }
+        // else if (state is CheckUserSignInStatus) {
+        //   bool anon = authinticationRemoteDs.checkUserSignInStatus();
+        //   if (anon) {
+        //     emit(UserAnonymousState());
+        //   } else {
+        //     emit(UserAuthorizedState());
+        //   }
+        // }
       } catch (e) {
         // Handle the exception here
         emit(UserErrorState(
             error: 'please enter your Credentials correctly,or sign up '));
       }
     });
+  }
+  bool isUserAnonymous() {
+    return authinticationRemoteDs.checkUserSignInStatus();
   }
 }

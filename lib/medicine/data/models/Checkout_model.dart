@@ -6,7 +6,7 @@ import 'cart_model.dart';
 
 class CheckoutData {
   final List<CartModel> cartModels;
-  final String dateTime, fullName, phoneNumber;
+  final String dateTime, fullName, phoneNumber, email;
   final int total;
 
   CheckoutData(
@@ -14,7 +14,8 @@ class CheckoutData {
       required this.dateTime,
       required this.fullName,
       required this.phoneNumber,
-      required this.total});
+      required this.total,
+      required this.email});
 }
 
 class CheckoutModel extends CheckoutData {
@@ -23,13 +24,15 @@ class CheckoutModel extends CheckoutData {
       required super.dateTime,
       required super.fullName,
       required super.phoneNumber,
-      required super.total});
+      required super.total,
+      required super.email});
   Map<String, dynamic> toMap() {
     return {
       'cartModels': cartModels.map((cartModel) => cartModel.toMap()).toList(),
       'total': total,
       'fullName': fullName,
       'phoneNumber': phoneNumber,
+      'email': email
     };
   }
 
@@ -42,6 +45,7 @@ class CheckoutModel extends CheckoutData {
       phoneNumber: doc.data()['phoneNumber'],
       dateTime: doc.id,
       total: doc.data()['total'],
+      email: doc.data()['email'],
     );
   }
 

@@ -32,6 +32,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         } else if (event is DeleteCart) {
           emit(CartLoading());
           await cartRemoteDs.deleteCart(event.cartModel);
+          emit(CartLoading());
           List<CartModel> carts = await cartRemoteDs.getCartsForUser();
           emit(CartLoaded(cartModels: carts));
         }

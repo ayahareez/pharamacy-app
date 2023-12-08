@@ -11,6 +11,7 @@ abstract class AuthinticationRemoteDs {
   Future<void> signOut();
   bool checkIfAuth();
   String getUserId();
+  bool checkUserSignInStatus();
 }
 
 class AuthinticationRemoteDsImpl extends AuthinticationRemoteDs {
@@ -57,6 +58,21 @@ class AuthinticationRemoteDsImpl extends AuthinticationRemoteDs {
       // Handle any errors that occur during guest sign-in
       print('Error signing in as a guest: $e');
       throw Exception('Failed to sign in as a guest');
+    }
+  }
+
+  bool checkUserSignInStatus() {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+
+    if (user != null) {
+      print("User is signed in!");
+      print("User UID: ${user.uid}");
+      print("Is Anonymous.........: ${user.isAnonymous}");
+      return user.isAnonymous;
+    } else {
+      print("User is signed out.");
+      return false;
     }
   }
 }

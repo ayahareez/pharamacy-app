@@ -31,14 +31,28 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsetsDirectional.only(
+          top: 16,
+          start: 8,
+          end: 8,
+        ),
         child: SizedBox(
           width: double.infinity,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${widget.checkoutModel.fullName}\'s Orders',
+              Text('Name: ${widget.checkoutModel.fullName}',
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 22)),
+                      fontWeight: FontWeight.bold, fontSize: 18)),
+              Text('Email: ${widget.checkoutModel.email}',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18)),
+              Text('Phone: ${widget.checkoutModel.phoneNumber}',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18)),
+              SizedBox(
+                height: 8,
+              ),
               SizedBox(
                 height: 500,
                 child: ListView.builder(

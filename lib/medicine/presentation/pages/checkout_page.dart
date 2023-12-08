@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:pharmacy/medicine/data/models/Checkout_model.dart';
 import 'package:pharmacy/medicine/data/models/cart_model.dart';
 import 'package:pharmacy/medicine/presentation/widgets/checkout_grid_tile.dart';
 
+import '../../../user/presentation/bloc/auth/auth_bloc.dart';
 import '../bloc/cart_bloc/cart_bloc.dart';
 import '../bloc/checkout_bloc/checkout_bloc.dart';
 
@@ -20,6 +22,9 @@ class CheckoutPage extends StatefulWidget {
 class _CheckoutPageState extends State<CheckoutPage> {
   List<TextEditingController> controllers =
       List.generate(4, (_) => TextEditingController());
+  int theTotal = 0;
+
+  int thePrice = 0;
 
   int total(List<CartModel> cartModels) {
     int total = 0;
@@ -39,9 +44,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
     return total.toInt();
   }
 
-  int theTotal = 0;
-
-  int thePrice = 0;
   @override
   void initState() {
     theTotal = total(widget.cartModels);
@@ -139,19 +141,30 @@ class _CheckoutPageState extends State<CheckoutPage> {
             ),
             SizedBox(
               width: double.infinity,
-              child: TextButton(
-                onPressed: () {
-                  _showOverlayPage(context);
+              child: BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  return TextButton(
+                    onPressed: () {
+                      print(state);
+                      final authBloc = context.read<AuthBloc>();
+
+                      if (authBloc.isUserAnonymous()) {
+                        _showSignupRequiredDialog(context);
+                      } else {
+                        _showOverlayPage(context);
+                      }
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: const Color(0xfff5e0c0),
+                      primary: Colors.black,
+                    ),
+                    child: const Text(
+                      'CONFIRM ORDER',
+                      style: TextStyle(
+                          fontSize: 18, fontFamily: 'CrimsonText-Regular'),
+                    ),
+                  );
                 },
-                style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xfff5e0c0),
-                  primary: Colors.black,
-                ),
-                child: const Text(
-                  'CONFIRM ORDER',
-                  style: TextStyle(
-                      fontSize: 18, fontFamily: 'CrimsonText-Regular'),
-                ),
               ),
             ),
           ],
@@ -212,8 +225,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  int totalPrice = widget.cartModels.fold(0,
-                      (sum, cartModel) => sum + cartModel.medicineModel.price);
+                  int totalPrice = price(widget.cartModels);
                   DateTime now = DateTime.now();
                   String formattedDate =
                       DateFormat('yyyy-MM-dd  HH:mm:ss').format(now);
@@ -222,7 +234,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       dateTime: formattedDate,
                       fullName: nameController.text,
                       phoneNumber: phoneController.text,
-                      total: totalPrice);
+                      total: totalPrice,
+                      email: emailController.text);
                   context
                       .read<CheckoutBloc>()
                       .add(SetOrder(checkoutModel: checkoutModel));
@@ -241,5 +254,64 @@ class _CheckoutPageState extends State<CheckoutPage> {
         );
       },
     );
+  }
+}
+
+void _showSignupRequiredDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: const Color(0xffDFD7C4),
+        title: const Center(
+          child: Text(
+            'Sign up Required',
+            style: TextStyle(color: Color(0xff201E1F)),
+          ),
+        ),
+        content: const Text(
+          'Please Sign up to confirm your order.',
+          style: TextStyle(color: Color(0xff201E1F)),
+        ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xff201E1F),
+              ),
+              child: const Text(
+                'OK',
+                style: TextStyle(color: Color(0xffDFD7C4)),
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showToast(String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.CENTER,
+    timeInSecForIosWeb: 1,
+    backgroundColor: Colors.red,
+    textColor: Colors.white,
+    fontSize: 16.0,
+  );
+  int price(List<CartModel> cartModels) {
+    double total = 0;
+    for (int i = 0; i < cartModels.length; i++) {
+      for (int j = 0; j < cartModels[i].qty; j++) {
+        total += cartModels[i].medicineModel.price;
+      }
+    }
+    return total.toInt();
   }
 }

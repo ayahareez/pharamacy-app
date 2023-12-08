@@ -58,7 +58,7 @@ class OrderDetailsGridTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsetsDirectional.only(end: 8, top: 8),
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
@@ -75,6 +75,22 @@ class OrderDetailsGridTile extends StatelessWidget {
               flex: 3,
               child: Column(
                 children: [
+                  Row(
+                    children: [
+                      const Expanded(
+                          flex: 2,
+                          child: Text('Product Name: ',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 18))),
+                      Expanded(
+                          child: Text('${cartModel.medicineModel.productName}',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 16)))
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
                   Row(
                     children: [
                       const Expanded(

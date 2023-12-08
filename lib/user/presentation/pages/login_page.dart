@@ -20,7 +20,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
-    context.read<AuthBloc>().add(CheckIfAuth());
+    // context.read<AuthBloc>().add(CheckIfAuth());
     super.initState();
   }
 
@@ -175,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xfff5e0c0)),
-                          child: const Text('Login as guest',
+                          child: const Text('Login as a guest',
                               style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.black,
