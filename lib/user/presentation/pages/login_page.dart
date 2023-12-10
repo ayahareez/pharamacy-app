@@ -20,7 +20,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
-    // context.read<AuthBloc>().add(CheckIfAuth());
+    context.read<AuthBloc>().add(CheckIfAuth());
     super.initState();
   }
 
@@ -219,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
           );
         },
         listener: (BuildContext context, AuthState state) {
-          if (state is UserAuthorizedState) {
+          if (state is UserAuthorizedState || state is UserAnonymousState) {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(

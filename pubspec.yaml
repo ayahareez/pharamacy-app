@@ -46,6 +46,7 @@ dependencies:
   intl: ^0.18.1
   cloud_firestore:
   firebase_app_check:
+  get_it: ^7.6.4
 
 
 dev_dependencies:

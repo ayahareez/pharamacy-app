@@ -67,8 +67,10 @@ class CartRemoteDsImpl extends CartRemoteDs {
   }
 
   @override
-  Future deleteCart(CartModel cartModel) =>
-      dbHelper.delete(cartsCollectionName, cartModel.id);
+  Future deleteCart(CartModel cartModel) {
+    print('before deleteCart');
+    return dbHelper.delete(cartsCollectionName, cartModel.id);
+  }
 
   @override
   Future updateCart(CartModel cartModel) async {

@@ -22,7 +22,7 @@ class _ControllerPageState extends State<ControllerPage> {
 
   List<TabItem> tabItems = List.of([
     TabItem(
-      Icons.personal_injury,
+      Icons.vaccines,
       "PRODUCTS",
       const Color(0xff50514f),
       labelStyle: const TextStyle(

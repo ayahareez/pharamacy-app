@@ -34,7 +34,8 @@ class CartModel extends CartData {
             price: (doc.data()['medicineModel']['price'] as int?) ?? 0,
             imageUrl: doc.data()['medicineModel']['imageUrl'],
             description: doc.data()['medicineModel']['description'],
-            productId: doc.data()['medicineModel']['productId']),
+            productId: doc.data()['medicineModel']['productId'],
+            category: doc.data()['medicineModel']['category']),
         userId: doc.data()['userId'],
         id: doc.id);
   }

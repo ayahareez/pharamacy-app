@@ -36,6 +36,7 @@ void main() async {
   await Firebase.initializeApp();
   //await AuthinticationRemoteDsImpl().signOut();
   //await ProductRemoteDsImpl(dbHelper: RemoteDbHelperImpl()).setMedicines();
+  print('hello from main');
   //await MedicineRemoteDsImpl(dbHelper: RemoteDbHelperImpl()).setMedicine(medicines[0]);
   runApp(MultiBlocProvider(providers: [
     BlocProvider(

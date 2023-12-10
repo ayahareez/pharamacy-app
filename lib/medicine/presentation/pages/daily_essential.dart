@@ -2,11 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pharmacy/medicine/presentation/pages/contoller_page.dart';
-import 'package:pharmacy/medicine/presentation/pages/daily_essential.dart';
-import 'package:pharmacy/medicine/presentation/pages/health_page.dart';
 import 'package:pharmacy/medicine/presentation/pages/history_page.dart';
 import 'package:pharmacy/medicine/presentation/pages/ongoing_page.dart';
 import 'package:pharmacy/medicine/presentation/pages/personal_care.dart';
+import 'package:pharmacy/medicine/presentation/pages/products_page.dart';
 import 'package:pharmacy/medicine/presentation/pages/your_cart_page.dart';
 import 'package:pharmacy/medicine/presentation/widgets/product_grid_tile.dart';
 import 'package:pharmacy/user/presentation/pages/login_page.dart';
@@ -18,15 +17,16 @@ import '../../data/models/product_model.dart';
 import '../bloc/cart_bloc/cart_bloc.dart';
 import '../bloc/medicine_bloc/product_bloc.dart';
 import '../widgets/custom_keyboard.dart';
+import 'health_page.dart';
 
-class ProductsPage extends StatefulWidget {
-  const ProductsPage({super.key});
+class DailyEssential extends StatefulWidget {
+  const DailyEssential({super.key});
 
   @override
-  State<ProductsPage> createState() => _ProductsPageState();
+  State<DailyEssential> createState() => _DailyEssentialState();
 }
 
-class _ProductsPageState extends State<ProductsPage> {
+class _DailyEssentialState extends State<DailyEssential> {
   late String name;
   late String userId = ''; // Initialize with an empty string
   bool cartFetched = false;
@@ -91,7 +91,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   ),
                 ),
                 title: const Text(
-                  'M\'s Remedies',
+                  'Daily Essential',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -194,14 +194,14 @@ class _ProductsPageState extends State<ProductsPage> {
                                             context,
                                             (_) => false,
                                           );
-                                          context
-                                              .read<AuthBloc>()
-                                              .add(SignOut());
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       const LoginPage()));
+                                          context
+                                              .read<AuthBloc>()
+                                              .add(SignOut());
                                         },
                                         child: const Text('LogOut',
                                             style: TextStyle(
@@ -372,8 +372,16 @@ class _ProductsPageState extends State<ProductsPage> {
                     mainAxisSpacing: 24,
                   ),
                   itemBuilder: (_, i) =>
-                      ProductGridTile(medicineModel: displayProducts[i]),
-                  itemCount: displayProducts.length,
+                      //
+                      ProductGridTile(
+                    medicineModel: displayProducts
+                        .where((element) => element.category == 'B')
+                        .toList()[i],
+                  ),
+                  itemCount: displayProducts
+                      .where((element) => element.category == 'B')
+                      .toList()
+                      .length,
                 ),
               ));
         }

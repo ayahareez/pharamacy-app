@@ -36,8 +36,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } else if (event is CheckIfAuth) {
           emit(UserLoadingState());
           final isSigned = authinticationRemoteDs.checkIfAuth();
+          final bool anon = authinticationRemoteDs.checkUserSignInStatus();
           // print(isSigned);
-          if (isSigned) {
+          if (isSigned && anon) {
+            emit(UserAnonymousState());
+          } else if (isSigned) {
             emit(UserAuthorizedState());
           } else {
             emit(UserUnauthorized());
@@ -67,7 +70,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
   }
-  bool isUserAnonymous() {
-    return authinticationRemoteDs.checkUserSignInStatus();
-  }
+  // bool isUserAnonymous() {
+  //   return authinticationRemoteDs.checkUserSignInStatus();
+  // }
 }

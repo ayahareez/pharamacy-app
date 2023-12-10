@@ -146,9 +146,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   return TextButton(
                     onPressed: () {
                       print(state);
-                      final authBloc = context.read<AuthBloc>();
 
-                      if (authBloc.isUserAnonymous()) {
+                      if (state is UserAnonymousState) {
                         _showSignupRequiredDialog(context);
                       } else {
                         _showOverlayPage(context);

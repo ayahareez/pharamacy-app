@@ -63,6 +63,7 @@ class _ProductGridTileState extends State<ProductGridTile> {
                 cartModel = state.cartModels[i];
               }
             }
+            print(qty);
             return ClipRRect(
               borderRadius: BorderRadius.circular(24),
               child: GridTile(
@@ -148,7 +149,7 @@ class _ProductGridTileState extends State<ProductGridTile> {
                                 onTap: () {
                                   setState(() {
                                     qty++;
-                                    print(qty);
+                                    // print(qty);
                                     for (int i = 0;
                                         i < state.cartModels.length;
                                         i++) {
@@ -169,7 +170,7 @@ class _ProductGridTileState extends State<ProductGridTile> {
                                                     widget.medicineModel,
                                                 userId: '',
                                                 id: '')));
-                                    print(qty);
+                                    // print(qty);
                                   } else {
                                     context.read<CartBloc>().add(UpdateCart(
                                         cartModel: cartModel ??

@@ -123,21 +123,21 @@ class OrderDetailsGridTile extends StatelessWidget {
                   const SizedBox(
                     height: 8,
                   ),
-                  Row(
-                    children: [
-                      const Expanded(
-                          flex: 2,
-                          child: Text('Product Description: ',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 18))),
-                      Expanded(
-                          child: Center(
-                        child: Text(cartModel.medicineModel.description,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w500, fontSize: 16)),
-                      ))
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     const Expanded(
+                  //         flex: 2,
+                  //         child: Text('Product Description: ',
+                  //             style: TextStyle(
+                  //                 fontWeight: FontWeight.w600, fontSize: 18))),
+                  //     Expanded(
+                  //         child: Center(
+                  //       child: Text(cartModel.medicineModel.description,
+                  //           style: const TextStyle(
+                  //               fontWeight: FontWeight.w500, fontSize: 16)),
+                  //     ))
+                  //   ],
+                  // ),
                 ],
               ),
             ),

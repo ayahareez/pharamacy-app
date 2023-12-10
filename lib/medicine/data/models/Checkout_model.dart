@@ -66,7 +66,8 @@ class CheckoutModel extends CheckoutData {
                 0,
             imageUrl: doc.data()['cartModels'][i]['medicineModel']['imageUrl'],
             productId: doc.data()['cartModels'][i]['medicineModel']
-                ['productId']),
+                ['productId'],
+            category: doc.data()['cartModels'][i]['medicineModel']['category']),
         userId: '',
         id: '',
       );
