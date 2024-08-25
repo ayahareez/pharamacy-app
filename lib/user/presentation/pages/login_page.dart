@@ -219,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
           );
         },
         listener: (BuildContext context, AuthState state) {
-          if (state is UserAuthorizedState ) {
+          if (state is UserAuthorizedState || state is UserAnonymousState) {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
