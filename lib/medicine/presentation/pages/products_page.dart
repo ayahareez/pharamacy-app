@@ -38,6 +38,8 @@ class _ProductsPageState extends State<ProductsPage> {
     if (!cartFetched) {
       _initializeData();
       context.read<ProductBloc>().add(GetProducts());
+      print('mmmmm');
+      context.read<CartBloc>().add(GetCart());
       cartFetched = true;
     }
   }
@@ -188,27 +190,33 @@ class _ProductsPageState extends State<ProductsPage> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.popUntil(
-                                            context,
-                                            (_) => false,
-                                          );
-                                          context
-                                              .read<AuthBloc>()
-                                              .add(SignOut());
-                                          Navigator.push(
+                                      BlocListener<AuthBloc, AuthState>(
+                                        listener: (context, state) {
+                                          if (state is UserUnauthorized) {
+                                            Navigator.popUntil(
                                               context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const LoginPage()));
+                                              (_) => false,
+                                            );
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const LoginPage()));
+                                          }
                                         },
-                                        child: const Text('LogOut',
-                                            style: TextStyle(
-                                                fontFamily:
-                                                    'CrimsonText-Regular',
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18)),
+                                        child: TextButton(
+                                          onPressed: () {
+                                            context
+                                                .read<AuthBloc>()
+                                                .add(SignOut());
+                                          },
+                                          child: const Text('LogOut',
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      'CrimsonText-Regular',
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18)),
+                                        ),
                                       ),
                                       const Icon(Icons.logout),
                                     ],

@@ -154,8 +154,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       }
                     },
                     style: TextButton.styleFrom(
-                      backgroundColor: const Color(0xfff5e0c0),
-                      primary: Colors.black,
+                      foregroundColor: Colors.black, backgroundColor: const Color(0xfff5e0c0),
                     ),
                     child: const Text(
                       'CONFIRM ORDER',

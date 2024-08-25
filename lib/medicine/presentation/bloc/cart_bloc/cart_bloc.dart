@@ -20,7 +20,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           List<CartModel> carts = await cartRemoteDs.getCartsForUser();
           emit(CartLoaded(cartModels: carts));
         } else if (event is SetCart) {
-          emit(CartLoading());
           await cartRemoteDs.setCart(event.cartModel);
           List<CartModel> carts = await cartRemoteDs.getCartsForUser();
           //print("$carts looooooool");
@@ -30,13 +29,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           List<CartModel> carts = await cartRemoteDs.getCartsForUser();
           emit(CartLoaded(cartModels: carts));
         } else if (event is DeleteCart) {
-          emit(CartLoading());
           await cartRemoteDs.deleteCart(event.cartModel);
           List<CartModel> carts = await cartRemoteDs.getCartsForUser();
           emit(CartLoaded(cartModels: carts));
         }
         if (event is DeleteCartsForUser) {
-          emit(CartLoading());
           await cartRemoteDs.deleteCartsForUser();
           List<CartModel> carts = await cartRemoteDs.getCartsForUser();
           emit(CartLoaded(cartModels: carts));

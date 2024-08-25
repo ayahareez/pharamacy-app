@@ -18,19 +18,20 @@ class ProductGridTile extends StatefulWidget {
 }
 
 class _ProductGridTileState extends State<ProductGridTile> {
-  int qty = 0;
-  CartModel? cartModel;
+  late CartModel cartModel = CartModel(
+      qty: 0, medicineModel: widget.medicineModel, userId: '', id: '');
   bool cartFetched = false;
   String? userId;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!cartFetched) {
-      context.read<CartBloc>().add(GetCart());
-      cartFetched = true;
-    }
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   if (!cartFetched) {
+  //     print('mmmmmmmmmm');
+  //     context.read<CartBloc>().add(GetCart());
+  //     cartFetched = true;
+  //   }
+  // }
 
   @override
   void initState() {
@@ -55,15 +56,16 @@ class _ProductGridTileState extends State<ProductGridTile> {
           //   return Center(child: CircularProgressIndicator());
           // }
           if (state is CartLoaded) {
-            for (int i = 0; i < state.cartModels.length; i++) {
-              if (state.cartModels[i].medicineModel.productId ==
-                      widget.medicineModel.productId &&
-                  state.cartModels[i].userId == userId) {
-                qty = state.cartModels[i].qty;
-                cartModel = state.cartModels[i];
-              }
-            }
-            print(qty);
+            cartModel = state.cartModels.firstWhere(
+                (element) =>
+                    element.medicineModel.productId ==
+                        widget.medicineModel.productId &&
+                    element.userId == userId,
+                orElse: () => CartModel(
+                    qty: 0,
+                    medicineModel: widget.medicineModel,
+                    userId: '',
+                    id: ''));
             return ClipRRect(
               borderRadius: BorderRadius.circular(24),
               child: GridTile(
@@ -102,7 +104,7 @@ class _ProductGridTileState extends State<ProductGridTile> {
                             ),
                             const Spacer(),
                             Text(
-                              qty == 0 ? ' ' : '${qty}',
+                              cartModel.qty == 0 ? ' ' : '${cartModel.qty}',
                               style: TextStyle(
                                 color: Colors.grey[900],
                                 fontWeight: FontWeight.w600,
@@ -112,32 +114,18 @@ class _ProductGridTileState extends State<ProductGridTile> {
                             InkWell(
                                 onTap: () {
                                   setState(() {
-                                    if (qty <= 0) {
-                                      qty = 0;
-                                      cartModel!.qty = qty;
-                                    } else {
-                                      qty--;
-                                      cartModel!.qty = qty;
+                                    if (cartModel.qty != 0) {
+                                      cartModel.qty--;
                                     }
                                   });
-                                  if (qty == 0) {
-                                    context.read<CartBloc>().add(DeleteCart(
-                                        cartModel: cartModel ??
-                                            CartModel(
-                                                qty: qty,
-                                                medicineModel:
-                                                    widget.medicineModel,
-                                                userId: '',
-                                                id: '')));
+                                  if (cartModel.qty == 0) {
+                                    context
+                                        .read<CartBloc>()
+                                        .add(DeleteCart(cartModel: cartModel));
                                   } else {
-                                    context.read<CartBloc>().add(UpdateCart(
-                                        cartModel: cartModel ??
-                                            CartModel(
-                                                qty: qty,
-                                                medicineModel:
-                                                    widget.medicineModel,
-                                                userId: '',
-                                                id: '')));
+                                    context
+                                        .read<CartBloc>()
+                                        .add(UpdateCart(cartModel: cartModel));
                                   }
                                 },
                                 child: const Icon(
@@ -148,38 +136,18 @@ class _ProductGridTileState extends State<ProductGridTile> {
                             InkWell(
                                 onTap: () {
                                   setState(() {
-                                    qty++;
-                                    // print(qty);
-                                    for (int i = 0;
-                                        i < state.cartModels.length;
-                                        i++) {
-                                      if (state.cartModels[i].medicineModel
-                                              .productId ==
-                                          widget.medicineModel.productId) {
-                                        state.cartModels[i].qty = qty;
-                                      }
-                                    }
+                                    cartModel.qty++;
                                   });
 
-                                  if (qty == 1) {
-                                    context.read<CartBloc>().add(SetCart(
-                                        cartModel: cartModel ??
-                                            CartModel(
-                                                qty: qty,
-                                                medicineModel:
-                                                    widget.medicineModel,
-                                                userId: '',
-                                                id: '')));
+                                  if (cartModel.qty == 1) {
+                                    context
+                                        .read<CartBloc>()
+                                        .add(SetCart(cartModel: cartModel));
                                     // print(qty);
                                   } else {
-                                    context.read<CartBloc>().add(UpdateCart(
-                                        cartModel: cartModel ??
-                                            CartModel(
-                                                qty: qty,
-                                                medicineModel:
-                                                    widget.medicineModel,
-                                                userId: '',
-                                                id: '')));
+                                    context
+                                        .read<CartBloc>()
+                                        .add(UpdateCart(cartModel: cartModel));
                                   }
                                 },
                                 child: const Icon(Icons.add_shopping_cart)),

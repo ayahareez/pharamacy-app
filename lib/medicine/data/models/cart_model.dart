@@ -28,7 +28,7 @@ class CartModel extends CartData {
   factory CartModel.fromDoc(QueryDocumentSnapshot<Map<String, dynamic>> doc) {
     print('${doc.id} from docId');
     return CartModel(
-        qty: doc.data()['qty'],
+        qty: doc.data()['qty'] ?? 0,
         medicineModel: ProductModel(
             productName: doc.data()['medicineModel']['productName'],
             price: (doc.data()['medicineModel']['price'] as int?) ?? 0,
